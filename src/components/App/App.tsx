@@ -10,9 +10,8 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage.tsx";
 
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [movieDetails, setMovieDetails] = useState<Movie>();
+  const [movieDetails, setMovieDetails] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isModalShow, setIsModalShow] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   const searchMovies = async (query: string): Promise<void> => {
@@ -20,6 +19,7 @@ function App() {
       setMovies([]);
       setLoading(true);
       setHasError(false);
+      setMovieDetails(null);
       const movies = await fetchMovies(query);
       if (!movies || movies.length < 1) {
         toast.error("No movies found for your request.");
@@ -32,18 +32,12 @@ function App() {
     }
   };
 
-  const openModal = (): void => {
-    setIsModalShow(true);
-  };
-
   const closeModal = (): void => {
-    setIsModalShow(false);
-    setMovieDetails(undefined);
+    setMovieDetails(null);
   };
 
   function showDetails(movie: Movie): void {
     setMovieDetails(movie);
-    openModal();
   }
 
   let content = null;
@@ -55,17 +49,12 @@ function App() {
     content = <MovieGrid movies={movies} onSelect={showDetails}/>;
   }
 
-  let modal = null;
-  if (isModalShow && movieDetails) {
-    modal = <MovieModal movie={movieDetails} onClose={closeModal}/>;
-  }
-
   return (
     <>
       <Toaster/>
       <SearchBar onSubmit={searchMovies}/>
       {content}
-      {modal}
+      {movieDetails && <MovieModal movie={movieDetails} onClose={closeModal}/>}
     </>
   );
 }

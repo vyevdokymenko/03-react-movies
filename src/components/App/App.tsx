@@ -17,6 +17,7 @@ function App() {
 
   const searchMovies = async (query: string): Promise<void> => {
     try {
+      setMovies([]);
       setLoading(true);
       setHasError(false);
       const movies = await fetchMovies(query);
@@ -24,7 +25,7 @@ function App() {
         toast.error("No movies found for your request.");
       }
       setMovies(movies);
-    } catch (error) {
+    } catch {
       setHasError(true);
     } finally {
       setLoading(false);
@@ -37,6 +38,7 @@ function App() {
 
   const closeModal = (): void => {
     setIsModalShow(false);
+    setMovieDetails(undefined);
   };
 
   function showDetails(movie: Movie): void {

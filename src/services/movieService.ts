@@ -19,6 +19,11 @@ interface MoviedbResponse {
 }
 
 export const fetchMovies = async (query: string): Promise<Movie[]> => {
-  const response = await api.get<MoviedbResponse>(`/3/search/movie?query=${query}`);
+  const response = await api.get<MoviedbResponse>(
+    "/3/search/movie",
+    {
+      params: { query }
+    }
+  );
   return response.data.results;
 };
